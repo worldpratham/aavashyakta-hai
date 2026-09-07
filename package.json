@@ -1,0 +1,14 @@
+{
+  "name": "avashyakta-hai-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root workspace runner for Avashyakta Hai project",
+  "scripts": {
+    "dev": "npm run dev --prefix \"NEw project Avasyakta hai\"",
+    "dev:frontend": "npm run dev --prefix \"NEw project Avasyakta hai\"",
+    "dev:backend": "npm run dev --prefix \"Backend avashyakta hai\"",
+    "start:backend": "npm start --prefix \"Backend avashyakta hai\"",
+    "build:frontend": "npm run build --prefix \"NEw project Avasyakta hai\"",
+    "install:all": "npm install --prefix \"NEw project Avasyakta hai\" && npm install --prefix \"Backend avashyakta hai\""
+  }
+}
