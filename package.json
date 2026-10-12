@@ -2,13 +2,19 @@
   "name": "avashyakta-hai-root",
   "version": "1.0.0",
   "private": true,
-  "description": "Root workspace runner for Avashyakta Hai project",
+  "description": "Unified runner and single server architecture for Avashyakta Hai",
+  "main": "server.js",
   "scripts": {
-    "dev": "npm run dev --prefix \"NEw project Avasyakta hai\"",
-    "dev:frontend": "npm run dev --prefix \"NEw project Avasyakta hai\"",
+    "start": "node server.js",
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"cyan.bold,magenta.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "npm run dev --prefix \"Backend avashyakta hai\"",
+    "dev:frontend": "npm run dev --prefix \"NEw project Avasyakta hai\"",
     "start:backend": "npm start --prefix \"Backend avashyakta hai\"",
+    "build": "npm run build --prefix \"NEw project Avasyakta hai\"",
     "build:frontend": "npm run build --prefix \"NEw project Avasyakta hai\"",
-    "install:all": "npm install --prefix \"NEw project Avasyakta hai\" && npm install --prefix \"Backend avashyakta hai\""
+    "install:all": "npm install && npm install --prefix \"Backend avashyakta hai\" && npm install --prefix \"NEw project Avasyakta hai\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
   }
 }
