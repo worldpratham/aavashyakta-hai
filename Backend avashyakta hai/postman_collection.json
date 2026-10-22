@@ -1,0 +1,524 @@
+{
+  "info": {
+    "_postman_id": "avashyakta-backend-api-v2-pagewise",
+    "name": "Avashyakta Backend API Collection (Page-Wise)",
+    "description": "Postman collection organized page-by-page for every screen in Avashyakta platform with dedicated controllers and endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "job_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "app_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. SignUpPage",
+      "item": [
+        {
+          "name": "POST Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "}",
+                  "if (jsonData.user && (jsonData.user.id || jsonData.user._id)) {",
+                  "    pm.collectionVariables.set('user_id', jsonData.user.id || jsonData.user._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Ramesh Sharma\",\n  \"email\": \"employer@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"employer\",\n  \"phone\": \"9876543210\",\n  \"location\": \"Indore, Madhya Pradesh\",\n  \"bio\": \"Construction contractor\",\n  \"company_name\": \"Sharma Builders\",\n  \"company_type\": \"Registered Company\",\n  \"gst_or_id\": \"07AAAAA0000A1Z5\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Endpoint for SignUpPage - Register new Employer or Worker"
+          }
+        },
+        {
+          "name": "POST Send 6-Digit OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"purpose\": \"signup\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/send-otp",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "send-otp"]
+            },
+            "description": "Generate and send 6-digit OTP to mobile number or email"
+          }
+        },
+        {
+          "name": "POST Verify 6-Digit OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/verify-otp",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "verify-otp"]
+            },
+            "description": "Verify 6-digit OTP entered by user"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. SignInPage",
+      "item": [
+        {
+          "name": "POST Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.token);",
+                  "    if (jsonData.user && (jsonData.user.id || jsonData.user._id)) {",
+                  "        pm.collectionVariables.set('user_id', jsonData.user.id || jsonData.user._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"employer@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Endpoint for SignInPage - Authenticate user and receive JWT token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. ProfilePage",
+      "item": [
+        {
+          "name": "GET Current User Profile (Me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Fetch current logged-in user profile on ProfilePage"
+          }
+        },
+        {
+          "name": "GET User Profile By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            },
+            "description": "Fetch user profile details by ID on ProfilePage"
+          }
+        },
+        {
+          "name": "PUT Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Ramesh Sharma (Updated)\",\n  \"phone\": \"9876599999\",\n  \"location\": \"Bhopal, MP\",\n  \"bio\": \"Senior Contractor & Builder\",\n  \"skills\": [\"Construction\", \"Renovation\"],\n  \"company_name\": \"Sharma Construction Pvt Ltd\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            },
+            "description": "Update user details on ProfilePage"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. LandingPage & JobsPage",
+      "item": [
+        {
+          "name": "GET All Jobs (Search & Filter)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs?status=open&search=",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "open"
+                },
+                {
+                  "key": "category",
+                  "value": "Office Work",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": "Bhopal",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Browse and search jobs for LandingPage & JobsPage"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. JobDetailPage",
+      "item": [
+        {
+          "name": "GET Single Job Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"]
+            },
+            "description": "Fetch detailed information for a single job on JobDetailPage"
+          }
+        },
+        {
+          "name": "POST Apply for Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData._id || jsonData.id) {",
+                  "    pm.collectionVariables.set('app_id', jsonData._id || jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jobId\": \"{{job_id}}\",\n  \"expectedWage\": 15000,\n  \"message\": \"I have 2 years of experience in computer office work and I am available immediately.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/applications",
+              "host": ["{{base_url}}"],
+              "path": ["api", "applications"]
+            },
+            "description": "Worker applies for a job from JobDetailPage"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. PostJobPage",
+      "item": [
+        {
+          "name": "POST Create New Job",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData._id || jsonData.id) {",
+                  "    pm.collectionVariables.set('job_id', jsonData._id || jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Office Assistant Required\",\n  \"description\": \"We are looking for an office assistant for daily office work.\",\n  \"category\": \"Office Work\",\n  \"location\": \"Bhopal, Madhya Pradesh\",\n  \"wage\": 15000,\n  \"wage_type\": \"monthly\",\n  \"phone\": \"9876543210\",\n  \"status\": \"open\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            },
+            "description": "Employer creates a new job listing on PostJobPage"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. MyJobsPage (Employer Dashboard)",
+      "item": [
+        {
+          "name": "GET Employer Posted Jobs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/employer/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "employer", "{{user_id}}"]
+            },
+            "description": "Get all jobs posted by the employer for MyJobsPage"
+          }
+        },
+        {
+          "name": "PUT Update Posted Job",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wage\": 16000,\n  \"description\": \"Updated: Office assistant with computer basic knowledge needed urgently.\",\n  \"status\": \"open\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"]
+            },
+            "description": "Update existing job details on MyJobsPage"
+          }
+        },
+        {
+          "name": "DELETE Delete Posted Job",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"]
+            },
+            "description": "Delete a job on MyJobsPage"
+          }
+        },
+        {
+          "name": "GET Applications for a Job",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/applications/job/{{job_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "applications", "job", "{{job_id}}"]
+            },
+            "description": "View all received applicant applications for a job on MyJobsPage"
+          }
+        },
+        {
+          "name": "PUT Accept or Reject Application",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/applications/{{app_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "applications", "{{app_id}}"]
+            },
+            "description": "Employer accepts or rejects a candidate's application on MyJobsPage"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. MyApplicationsPage (Worker Dashboard)",
+      "item": [
+        {
+          "name": "GET Worker's Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/applications/worker/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "applications", "worker", "{{user_id}}"]
+            },
+            "description": "Worker views all jobs they applied for on MyApplicationsPage"
+          }
+        },
+        {
+          "name": "DELETE Withdraw Application",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/applications/{{app_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "applications", "{{app_id}}"]
+            },
+            "description": "Worker withdraws/cancels an application on MyApplicationsPage"
+          }
+        }
+      ]
+    }
+  ]
+}
