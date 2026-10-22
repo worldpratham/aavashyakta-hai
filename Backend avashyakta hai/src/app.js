@@ -85,6 +85,20 @@ app.use("/api", (req, res, next) => {
 app.use("/api", apiRoutes);
 
 // ======================================================
+// SERVE FRONTEND (SINGLE-SERVER ARCHITECTURE)
+// ======================================================
+const frontendDistPath = path.resolve(__dirname, "../../NEw project Avasyakta hai/dist");
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+}
+
+// ======================================================
 // ERROR HANDLING MIDDLEWARES
 // ======================================================
 
