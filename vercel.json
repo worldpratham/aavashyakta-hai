@@ -1,7 +1,15 @@
 {
-  "buildCommand": "npm install --prefix \"NEw project Avasyakta hai\" && npm run build --prefix \"NEw project Avasyakta hai\"",
+  "buildCommand": "npm run build",
   "outputDirectory": "NEw project Avasyakta hai/dist",
   "rewrites": [
+    {
+      "source": "/api",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

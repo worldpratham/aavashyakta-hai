@@ -12,6 +12,10 @@ try {
 
 const connectDB = async () => {
   try {
+    if (mongoose.connection.readyState >= 1) {
+      return mongoose.connection;
+    }
+
     if (!env.MONGODB_URL) {
       throw new Error("MONGODB_URL is missing in environment variables (.env)");
     }

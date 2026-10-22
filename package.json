@@ -10,9 +10,18 @@
     "dev:backend": "npm run dev --prefix \"Backend avashyakta hai\"",
     "dev:frontend": "npm run dev --prefix \"NEw project Avasyakta hai\"",
     "start:backend": "npm start --prefix \"Backend avashyakta hai\"",
-    "build": "npm run build --prefix \"NEw project Avasyakta hai\"",
-    "build:frontend": "npm run build --prefix \"NEw project Avasyakta hai\"",
+    "build": "npm run build:frontend",
+    "build:frontend": "npm install --prefix \"NEw project Avasyakta hai\" && npm run build --prefix \"NEw project Avasyakta hai\"",
     "install:all": "npm install && npm install --prefix \"Backend avashyakta hai\" && npm install --prefix \"NEw project Avasyakta hai\""
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.3",
+    "socket.io": "^4.8.4"
   },
   "devDependencies": {
     "concurrently": "^10.0.6"
