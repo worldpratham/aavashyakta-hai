@@ -16,6 +16,11 @@ module.exports = async (req, res) => {
     }
   }
 
+  // Ensure req.url retains the /api prefix for Express routing if Vercel stripped it
+  if (req.url && !req.url.startsWith("/api") && !req.url.startsWith("/?")) {
+    req.url = "/api" + (req.url.startsWith("/") ? req.url : "/" + req.url);
+  }
+
   // Forward request to Express application
   return app(req, res);
 };

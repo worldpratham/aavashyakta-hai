@@ -1,8 +1,23 @@
 
 /// <reference types="vite/client" />
 
-export const API_BASE_URL =
-  (import.meta.env?.VITE_API_URL as string) || 'http://localhost:5000/api';
+function getApiBaseUrl(): string {
+  if (typeof window !== 'undefined') {
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) {
+      const customUrl = import.meta.env?.VITE_API_URL as string | undefined;
+      if (customUrl && !customUrl.includes('localhost') && !customUrl.includes('127.0.0.1')) {
+        return customUrl;
+      }
+      return '/api';
+    }
+  }
+  return (import.meta.env?.VITE_API_URL as string) || 'http://localhost:5000/api';
+}
+
+export const API_BASE_URL = getApiBaseUrl();
 export type Role = 'employer' | 'worker';
 
 export type WageType = 'task' | 'daily' | 'weekly' | 'monthly' | 'fixed';

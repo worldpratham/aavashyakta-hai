@@ -1,6 +1,23 @@
-const API_BASE_URL =
-  (import.meta.env.VITE_API_URL as string) ||
-  (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+function getApiBaseUrl(): string {
+  // When running in the browser on a deployed domain (mobile, Vercel, or custom domain)
+  if (typeof window !== 'undefined') {
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+    if (!isLocalhost) {
+      // In production/mobile, only use VITE_API_URL if it points to an external remote server (not localhost)
+      const customUrl = import.meta.env.VITE_API_URL as string | undefined;
+      if (customUrl && !customUrl.includes('localhost') && !customUrl.includes('127.0.0.1')) {
+        return customUrl;
+      }
+      return '/api';
+    }
+  }
+
+  return (import.meta.env.VITE_API_URL as string) || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 export { API_BASE_URL };
 
