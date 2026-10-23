@@ -75,6 +75,40 @@ export interface Profile {
   createdAt?: string;
 }
 
+export interface UpdateUserProfilePayload {
+  full_name?: string;
+  name?: string;
+  phone?: string | null;
+  bio?: string | null;
+  location?: string | null;
+  skills?: string[] | string | null;
+  primary_skill?: string | null;
+  experience_level?: string | null;
+  company_name?: string | null;
+  company_type?: string | null;
+  gst_or_id?: string | null;
+  is_verified?: boolean;
+  verification_status?: 'unverified' | 'pending' | 'verified';
+  verification_badge?: 'unverified' | 'phone_verified' | 'verified_worker';
+  is_available_now?: boolean;
+  available_status_text?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  aadhaar_number?: string | null;
+  aadhaar_verified?: boolean;
+  payment_mode?: string | null;
+  upi_id?: string | null;
+  bank_details?: {
+    account_holder_name?: string;
+    account_number?: string;
+    ifsc_code?: string;
+    bank_name?: string;
+  } | null;
+  avatar_url?: string | null;
+  profileImage?: string | null;
+  [key: string]: any;
+}
+
 export interface Job {
   id: string;
   _id?: string;
@@ -632,26 +666,7 @@ export const api = {
       return normalizeProfile(data);
     },
 
-    async update(id: string, payload: {
-      full_name?: string;
-      name?: string;
-      phone?: string | null;
-      bio?: string | null;
-      location?: string | null;
-      skills?: string[] | string | null;
-      primary_skill?: string | null;
-      experience_level?: string | null;
-      company_name?: string | null;
-      company_type?: string | null;
-      gst_or_id?: string | null;
-      is_verified?: boolean;
-      verification_status?: 'unverified' | 'pending' | 'verified';
-      verification_badge?: 'unverified' | 'phone_verified' | 'verified_worker';
-      is_available_now?: boolean;
-      available_status_text?: string | null;
-      latitude?: number | null;
-      longitude?: number | null;
-    }): Promise<Profile> {
+    async update(id: string, payload: UpdateUserProfilePayload): Promise<Profile> {
       const response = await fetch(`${API_BASE_URL}/users/${id}`, {
         method: 'PUT',
         headers: getAuthHeaders(),

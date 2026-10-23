@@ -10,18 +10,12 @@ import {
   MicOff,
   RotateCcw,
   ChevronDown,
-  MessageSquare,
   ArrowRight,
-  Clock,
-  CheckCircle2,
-  HelpCircle,
-  Activity,
 } from 'lucide-react';
 import { useRouter } from '@/router';
 import { useLanguage } from '@/context/LanguageContext';
 import { useAuth } from '@/context/AuthContext';
-import { useUserActivityTracker, playChime } from '@/hooks/useUserActivityTracker';
-import { getProactiveHelp, getBotAnswer, BotAction } from '@/lib/aiBotKnowledge';
+import { getBotAnswer, BotAction } from '@/lib/aiBotKnowledge';
 
 interface Message {
   id: string;
@@ -44,20 +38,6 @@ export function AiChatbot() {
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  // Activity Tracker Hook (30s stuck threshold)
-  const {
-    secondsOnCurrentStep,
-    activeField,
-    isStuck,
-    stuckContext,
-    dismissStuckAlert,
-    triggerStuckAlertManually,
-  } = useUserActivityTracker({
-    stuckThresholdSeconds: 30,
-    snoozeDurationSeconds: 90,
-    soundEnabled,
-  });
-
   const isHi = language === 'hi';
 
   // Chat message history
@@ -66,7 +46,7 @@ export function AiChatbot() {
       id: 'init-1',
       sender: 'bot',
       text:
-        'नमस्ते! मैं **आवश्यकता AI सहायक (Abasyakta AI Assistant)** हूँ। 🙏✨\n\nमैं आपकी हर गतिविधि में मदद के लिए यहाँ हूँ। अगर आप कहीं भी अटकते हैं या 30 सेकंड से ज्यादा समय लग रहा है, तो मैं तुरंत सहायता करूंगा!\n\nआप मुझसे नौकरी खोजने, कामगार रखने, रजिस्ट्रेशन, OTP या मजदूरी के बारे में कुछ भी पूछ सकते हैं।',
+        'नमस्ते! मैं **आवश्यकता AI सहायक (Abasyakta AI Assistant)** हूँ। 🙏✨\n\nमैं आपकी हर सहायता के लिए यहाँ उपलब्ध हूँ।\n\nआप मुझसे नौकरी खोजने, कामगार रखने, रजिस्ट्रेशन, OTP या मजदूरी के बारे में कुछ भी पूछ सकते हैं।',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       actions: [
         { label: '👷 काम ढूंढें', path: '/jobs', actionType: 'navigate' },
@@ -205,31 +185,6 @@ export function AiChatbot() {
     }
   };
 
-  // Proactive help content when stuck
-  const proactiveData = stuckContext ? getProactiveHelp(stuckContext, language) : null;
-
-  // Handler when user clicks "Haan, help chahiye" in the 30-sec popup
-  const handleAcceptProactiveHelp = () => {
-    dismissStuckAlert();
-    setIsOpen(true);
-    setIsMinimized(false);
-
-    if (proactiveData) {
-      const proactiveMsg: Message = {
-        id: 'proactive-' + Date.now(),
-        sender: 'bot',
-        text: `🤝 **${proactiveData.headline}**\n\n${proactiveData.message}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actions: proactiveData.suggestedAction ? [proactiveData.suggestedAction] : undefined,
-        followUps: proactiveData.quickQuestions,
-      };
-      setMessages((prev) => [...prev, proactiveMsg]);
-      if (voiceSpeechEnabled) {
-        speakText(proactiveData.message);
-      }
-    }
-  };
-
   // Clear chat
   const handleClearChat = () => {
     setMessages([
@@ -259,89 +214,7 @@ export function AiChatbot() {
   return (
     <>
       {/* ========================================================================= */}
-      {/* 1. 30-SECOND STUCK PROACTIVE SPEECH BUBBLE                                  */}
-      {/* ========================================================================= */}
-      {isStuck && !isOpen && (
-        <div
-          role="alert"
-          aria-live="assertive"
-          className="fixed bottom-24 right-4 sm:right-6 z-50 max-w-sm sm:max-w-md w-[calc(100vw-2rem)] animate-slide-up"
-        >
-          <div className="relative rounded-2xl bg-white dark:bg-stone-900 border-2 border-emerald-500/80 shadow-2xl p-4 sm:p-5 backdrop-blur-xl transition-all">
-            {/* Pulsing ring indicator */}
-            <div className="absolute -top-2 -left-2 flex items-center justify-center">
-              <span className="relative flex h-5 w-5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-600 border-2 border-white dark:border-stone-900"></span>
-              </span>
-            </div>
-
-            {/* Header with Bot Icon & Close */}
-            <div className="flex items-start justify-between gap-3 mb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white shadow-md">
-                  <Bot size={22} className="animate-bounce" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                      {proactiveData?.headline || (isHi ? 'क्या मैं मदद कर सकता हूँ?' : 'May I help you?')}
-                    </h4>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-950/60 px-2 py-0.5 text-[10px] font-semibold text-amber-800 dark:text-amber-400">
-                      <Clock size={10} /> 30s+ Dwell
-                    </span>
-                  </div>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
-                    {getPageContextLabel()} {activeField ? `• Field: ${activeField}` : ''}
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => dismissStuckAlert()}
-                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 transition p-1"
-                title={isHi ? 'बंद करें' : 'Dismiss'}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Contextual stuck text */}
-            <p className="text-xs sm:text-sm text-stone-700 dark:text-stone-300 leading-relaxed mb-3.5 bg-stone-50 dark:bg-stone-800/60 p-2.5 rounded-lg border border-stone-200/60 dark:border-stone-700/60">
-              {proactiveData?.message ||
-                (isHi
-                  ? 'आप इस पेज पर कुछ देर से रुके हुए हैं। क्या मैं आपको आगे की प्रोसेस में मदद करूँ?'
-                  : 'You seem to have spent some time on this step. May I guide you forward?')}
-            </p>
-
-            {/* Action buttons */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleAcceptProactiveHelp}
-                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs sm:text-sm font-semibold px-4 py-2 shadow-md transition"
-              >
-                <Sparkles size={16} />
-                {isHi ? 'हाँ, मदद चाहिए' : 'Yes, Help Me'}
-              </button>
-              <button
-                type="button"
-                onClick={() => dismissStuckAlert()}
-                className="inline-flex items-center justify-center rounded-lg border border-stone-300 dark:border-stone-700 bg-white dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-300 text-xs sm:text-sm font-medium px-3.5 py-2 transition"
-              >
-                {isHi ? 'नहीं, ठीक है' : 'I am fine'}
-              </button>
-            </div>
-
-            {/* Bubble arrow pointing down-right */}
-            <div className="absolute -bottom-2 right-8 h-4 w-4 rotate-45 border-r border-b border-emerald-500/80 bg-white dark:bg-stone-900"></div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================================= */}
-      {/* 2. FLOATING TRIGGER BUTTON (Always visible at bottom right)                */}
+      {/* FLOATING TRIGGER BUTTON (Always visible at bottom right)                   */}
       {/* ========================================================================= */}
       <div className="fixed bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2">
         {/* Quick Help Pill when closed */}
@@ -351,7 +224,6 @@ export function AiChatbot() {
             onClick={() => {
               setIsOpen(true);
               setIsMinimized(false);
-              dismissStuckAlert();
             }}
             className="hidden sm:inline-flex items-center gap-2 rounded-full bg-white/95 dark:bg-stone-900/95 border border-stone-200 dark:border-stone-800 px-3.5 py-2 text-xs font-semibold text-stone-700 dark:text-stone-200 shadow-lg backdrop-blur-md hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition group"
           >
@@ -373,7 +245,6 @@ export function AiChatbot() {
             } else {
               setIsOpen(true);
               setIsMinimized(false);
-              dismissStuckAlert();
             }
           }}
           className={`relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-xl transition-all duration-300 active:scale-95 ${
@@ -400,7 +271,7 @@ export function AiChatbot() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. FULL CHAT WINDOW                                                       */}
+      {/* FULL CHAT WINDOW                                                          */}
       {/* ========================================================================= */}
       {isOpen && (
         <div
@@ -421,9 +292,8 @@ export function AiChatbot() {
                   <Sparkles size={13} className="text-amber-300" />
                 </h3>
                 <p className="text-[11px] text-emerald-100 flex items-center gap-1">
-                  <Activity size={10} className="animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300"></span>
                   <span>{getPageContextLabel()}</span>
-                  <span>• {secondsOnCurrentStep}s</span>
                 </p>
               </div>
             </div>
@@ -476,19 +346,11 @@ export function AiChatbot() {
               {/* Context Banner */}
               <div className="bg-emerald-50/80 dark:bg-emerald-950/40 border-b border-emerald-100 dark:border-emerald-900/40 px-3.5 py-1.5 flex items-center justify-between text-xs text-emerald-900 dark:text-emerald-300">
                 <span className="flex items-center gap-1.5 truncate">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                   <span>
-                    लाइव ट्रैकिंग सक्रिय • {getPageContextLabel()}
+                    लाइव सहायता • {getPageContextLabel()}
                   </span>
                 </span>
-                <button
-                  type="button"
-                  onClick={triggerStuckAlertManually}
-                  className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 hover:underline shrink-0"
-                  title="30 सेकंड ड्वेल अलर्ट टेस्ट करें"
-                >
-                  30s अलर्ट टेस्ट
-                </button>
               </div>
 
               {/* Messages Body */}
