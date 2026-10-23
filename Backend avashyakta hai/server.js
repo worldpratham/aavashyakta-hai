@@ -67,6 +67,7 @@ const startServer = async () => {
       socket.on("worker_status_toggle", (data) => {
         io.emit("worker_status_changed", data);
       });
+      
     });
 
     server.listen(env.PORT, () => {

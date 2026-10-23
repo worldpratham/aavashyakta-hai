@@ -90,7 +90,7 @@ app.use("/api", apiRoutes);
 const frontendDistPath = path.resolve(__dirname, "../../NEw project Avasyakta hai/dist");
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
-  app.get("*", (req, res, next) => {
+  app.get("/{*splat}", (req, res, next) => {
     if (req.path.startsWith("/api")) {
       return next();
     }
