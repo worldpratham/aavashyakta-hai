@@ -6,12 +6,14 @@ let socketInstance: Socket | null = null;
 export function getSocketUrl(): string {
   try {
     if (API_BASE_URL.startsWith('/')) {
-      return typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5000';
+      return typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+        ? 'https://aavashyakta-hai.onrender.com'
+        : (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5000');
     }
     const url = new URL(API_BASE_URL);
     return `${url.protocol}//${url.host}`;
   } catch {
-    return 'http://localhost:5000';
+    return 'https://aavashyakta-hai.onrender.com';
   }
 }
 

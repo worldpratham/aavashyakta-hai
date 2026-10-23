@@ -1,6 +1,8 @@
 
 /// <reference types="vite/client" />
 
+const PRODUCTION_API_URL = 'https://aavashyakta-hai.onrender.com/api';
+
 function getApiBaseUrl(): string {
   if (typeof window !== 'undefined') {
     const isLocalhost =
@@ -11,7 +13,7 @@ function getApiBaseUrl(): string {
       if (customUrl && !customUrl.includes('localhost') && !customUrl.includes('127.0.0.1')) {
         return customUrl;
       }
-      return '/api';
+      return PRODUCTION_API_URL;
     }
   }
   return (import.meta.env?.VITE_API_URL as string) || 'http://localhost:5000/api';

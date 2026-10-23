@@ -1,3 +1,5 @@
+const PRODUCTION_API_URL = 'https://aavashyakta-hai.onrender.com/api';
+
 function getApiBaseUrl(): string {
   // When running in the browser on a deployed domain (mobile, Vercel, or custom domain)
   if (typeof window !== 'undefined') {
@@ -5,16 +7,15 @@ function getApiBaseUrl(): string {
       window.location.hostname === 'localhost' ||
       window.location.hostname === '127.0.0.1';
     if (!isLocalhost) {
-      // In production/mobile, only use VITE_API_URL if it points to an external remote server (not localhost)
       const customUrl = import.meta.env.VITE_API_URL as string | undefined;
       if (customUrl && !customUrl.includes('localhost') && !customUrl.includes('127.0.0.1')) {
         return customUrl;
       }
-      return '/api';
+      return PRODUCTION_API_URL;
     }
   }
 
-  return (import.meta.env.VITE_API_URL as string) || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+  return (import.meta.env.VITE_API_URL as string) || (import.meta.env.PROD ? PRODUCTION_API_URL : 'http://localhost:5000/api');
 }
 
 const API_BASE_URL = getApiBaseUrl();
