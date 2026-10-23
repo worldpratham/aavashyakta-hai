@@ -278,7 +278,7 @@ export function LandingPage() {
                 <span className="text-emerald-600 dark:text-emerald-400">काम चाहिए</span>{' '}
                 <span className="text-stone-400 dark:text-stone-500 font-light text-xl sm:text-2xl md:text-3xl mx-1 sm:mx-2">या</span>{' '}
                 <span className="bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 dark:from-emerald-400 dark:via-teal-300 dark:to-emerald-400 bg-clip-text text-transparent">
-                  काम वाला <span className="text-emerald-600 dark:text-emerald-400">?</span>
+                  कामवाला <span className="text-emerald-600 dark:text-emerald-400">?</span>
                 </span>
               </span>
 
