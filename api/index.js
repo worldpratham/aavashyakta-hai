@@ -4,8 +4,8 @@ const ensureAdminUser = require("../Backend avashyakta hai/src/utils/ensureAdmin
 
 let isInitialized = false;
 
-module.exports = async (req, res) => {
-  // Ensure database is connected on cold starts
+// Middleware to ensure DB connection is ready before processing requests
+app.use(async (req, res, next) => {
   if (!isInitialized) {
     try {
       await connectDB();
@@ -15,12 +15,7 @@ module.exports = async (req, res) => {
       console.error("[Vercel API] MongoDB initialization error:", err.message);
     }
   }
+  next();
+});
 
-  // Ensure req.url retains the /api prefix for Express routing if Vercel stripped it
-  if (req.url && !req.url.startsWith("/api") && !req.url.startsWith("/?")) {
-    req.url = "/api" + (req.url.startsWith("/") ? req.url : "/" + req.url);
-  }
-
-  // Forward request to Express application
-  return app(req, res);
-};
+module.exports = app;

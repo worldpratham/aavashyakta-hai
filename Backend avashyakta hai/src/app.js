@@ -82,7 +82,18 @@ app.use("/api", (req, res, next) => {
   next();
 });
 
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "Job Portal Backend is Running",
+    environment: env.NODE_ENV,
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use("/api", apiRoutes);
+app.use("/", apiRoutes);
 
 // ======================================================
 // SERVE FRONTEND (SINGLE-SERVER ARCHITECTURE)
