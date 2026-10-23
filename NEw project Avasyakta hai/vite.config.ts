@@ -24,7 +24,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  },
+  }, 
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
