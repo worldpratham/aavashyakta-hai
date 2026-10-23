@@ -10,8 +10,8 @@
     "dev:backend": "npm run dev --prefix \"Backend avashyakta hai\"",
     "dev:frontend": "npm run dev --prefix \"NEw project Avasyakta hai\"",
     "start:backend": "npm start --prefix \"Backend avashyakta hai\"",
-    "build": "npm run build --prefix \"NEw project Avasyakta hai\"",
-    "build:frontend": "npm run build --prefix \"NEw project Avasyakta hai\"",
+    "build": "npm run build --prefix \"NEw project Avasyakta hai\" && node -e \"const fs=require('fs'); fs.cpSync('NEw project Avasyakta hai/dist', 'dist', {recursive: true});\"",
+    "build:frontend": "npm run build --prefix \"NEw project Avasyakta hai\" && node -e \"const fs=require('fs'); fs.cpSync('NEw project Avasyakta hai/dist', 'dist', {recursive: true});\"",
     "install:all": "npm install && npm install --prefix \"Backend avashyakta hai\" && npm install --prefix \"NEw project Avasyakta hai\""
   },
   "dependencies": {
