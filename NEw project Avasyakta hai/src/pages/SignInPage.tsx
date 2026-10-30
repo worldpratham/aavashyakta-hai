@@ -86,9 +86,25 @@ export function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const cleanEmail = email.trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!cleanEmail) {
+      setError(language === 'hi' ? 'कृपया अपना ईमेल पता दर्ज करें।' : 'Please enter your email address.');
+      return;
+    }
+    if (!emailRegex.test(cleanEmail)) {
+      setError(
+        language === 'hi'
+          ? 'कृपया सही ईमेल पता दर्ज करें (उदा. user@example.com)।'
+          : 'Please enter a valid email address (e.g. user@example.com).'
+      );
+      return;
+    }
+
     setLoading(true);
 
-    const result = await signIn(email, password, role);
+    const result = await signIn(cleanEmail, password, role);
     setLoading(false);
 
     if (result.error) {

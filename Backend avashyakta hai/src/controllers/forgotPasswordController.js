@@ -77,6 +77,24 @@ const forgotPasswordSendOtp = asyncHandler(async (req, res) => {
     });
   }
 
+  if (cleanIdentifier.includes("@")) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanIdentifier)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address",
+      });
+    }
+  } else {
+    const digits = cleanIdentifier.replace(/\D/g, "");
+    if (digits.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be exactly 10 digits",
+      });
+    }
+  }
+
   // 1. Locate user account
   const user = await findUserByIdentifier(cleanIdentifier, role);
 

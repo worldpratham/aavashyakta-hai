@@ -92,8 +92,22 @@ export function ForgotPasswordModal({
     e.preventDefault();
     const cleanId = identifier.trim();
     if (!cleanId) {
-      setError(language === 'hi' ? 'कृपया अपना ईमेल या मोबाइल नंबर दर्ज करें' : 'Please enter your email or mobile number');
+      setError(language === 'hi' ? 'कृपया अपना ईमेल या 10-अंकीय मोबाइल नंबर दर्ज करें' : 'Please enter your email or 10-digit mobile number');
       return;
+    }
+
+    if (cleanId.includes('@')) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(cleanId)) {
+        setError(language === 'hi' ? 'कृपया सही ईमेल पता दर्ज करें (उदा. user@example.com)' : 'Please enter a valid email address (e.g. user@example.com)');
+        return;
+      }
+    } else {
+      const phoneDigits = cleanId.replace(/\D/g, '');
+      if (phoneDigits.length !== 10) {
+        setError(language === 'hi' ? 'कृपया सही 10-अंकीय मोबाइल नंबर दर्ज करें' : 'Please enter a valid 10-digit mobile number');
+        return;
+      }
     }
 
     setError(null);
@@ -321,7 +335,12 @@ export function ForgotPasswordModal({
                     className="input pl-10"
                     value={identifier}
                     onChange={(e) => {
-                      setIdentifier(e.target.value);
+                      let val = e.target.value.trim();
+                      // If user is entering digits only (mobile number), cap strictly at 10 digits
+                      if (/^\d+$/.test(val)) {
+                        val = val.slice(0, 10);
+                      }
+                      setIdentifier(val);
                       if (error) setError(null);
                     }}
                     placeholder={

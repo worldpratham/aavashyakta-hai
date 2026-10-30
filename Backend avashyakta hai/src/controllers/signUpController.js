@@ -14,7 +14,7 @@ const register = asyncHandler(async (req, res) => {
   const cleanEmail = (body.email || "").trim().toLowerCase();
   const cleanRole = (body.role || "").trim().toLowerCase();
   const cleanPassword = body.password || "";
-  const cleanPhone = (body.phone || "").trim();
+  const cleanPhone = (body.phone || "").replace(/\D/g, "").slice(0, 10);
   const cleanLocation = (body.location || "").trim();
   const cleanCompany = (body.company_name || body.companyName || "").trim();
   const cleanCompanyType = body.company_type || body.companyType || "Company / Business";
@@ -50,6 +50,21 @@ const register = asyncHandler(async (req, res) => {
     return res.status(400).json({
       success: false,
       message: "Role must be either worker or employer",
+    });
+  }
+
+  const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegexPattern.test(cleanEmail)) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide a valid email address",
+    });
+  }
+
+  if (body.phone && cleanPhone.length !== 10) {
+    return res.status(400).json({
+      success: false,
+      message: "Mobile number must be exactly 10 digits",
     });
   }
 

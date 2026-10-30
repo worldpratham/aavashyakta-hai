@@ -121,7 +121,20 @@ const updateProfile = asyncHandler(async (req, res) => {
 
   if (name !== undefined) user.full_name = name;
   if (full_name !== undefined) user.full_name = full_name;
-  if (phone !== undefined) user.phone = phone;
+  if (phone !== undefined) {
+    if (phone === null || phone === "") {
+      user.phone = "";
+    } else {
+      const cleanPhone = phone.toString().replace(/\D/g, "").slice(0, 10);
+      if (cleanPhone.length !== 10) {
+        return res.status(400).json({
+          success: false,
+          message: "Mobile number must be exactly 10 digits",
+        });
+      }
+      user.phone = cleanPhone;
+    }
+  }
   if (location !== undefined) user.location = location;
   if (bio !== undefined) user.bio = bio;
   if (profileImage !== undefined) user.avatar_url = profileImage;

@@ -17,7 +17,15 @@ const login = asyncHandler(async (req, res) => {
     });
   }
 
-  const cleanEmail = email.trim();
+  const cleanEmail = (email || "").trim().toLowerCase();
+  const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegexPattern.test(cleanEmail)) {
+    return res.status(400).json({
+      success: false,
+      message: "Please enter a valid email address",
+    });
+  }
+
   const emailRegex = new RegExp(`^${cleanEmail}$`, "i");
 
   let user = null;

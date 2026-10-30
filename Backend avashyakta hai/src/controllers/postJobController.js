@@ -63,6 +63,17 @@ const createJob = asyncHandler(async (req, res) => {
     resolvedCategory = job.trim();
   }
 
+  let cleanPhone = "";
+  if (phone && typeof phone === "string" && phone.trim()) {
+    cleanPhone = phone.replace(/\D/g, "").slice(0, 10);
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Contact phone must be a valid 10-digit mobile number",
+      });
+    }
+  }
+
   const jobData = {
     employer_id: employerId,
     title: typeof title === "string" ? title.trim() : title,
@@ -74,7 +85,7 @@ const createJob = asyncHandler(async (req, res) => {
     task_details: taskDetails || task_details || "",
     wage: Number(wage),
     wage_type: resolvedWageType,
-    phone: typeof phone === "string" ? phone.trim() : "",
+    phone: cleanPhone,
     latitude: latitude !== undefined && latitude !== null && !isNaN(Number(latitude)) ? Number(latitude) : null,
     longitude: longitude !== undefined && longitude !== null && !isNaN(Number(longitude)) ? Number(longitude) : null,
     status: "open",

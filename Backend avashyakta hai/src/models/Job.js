@@ -63,6 +63,12 @@ const jobSchema = new mongoose.Schema(
       type: String,
       default: "",
       trim: true,
+      validate: {
+        validator: function (v) {
+          return !v || /^[0-9]{10}$/.test(v);
+        },
+        message: "Contact mobile number must be exactly 10 digits",
+      },
     },
     status: {
       type: String,

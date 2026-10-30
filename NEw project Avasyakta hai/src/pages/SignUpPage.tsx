@@ -285,7 +285,7 @@ export function SignUpPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setEmail(e.target.value.trim());
                   clearFieldError('email');
                 }}
                 placeholder="name@example.com"

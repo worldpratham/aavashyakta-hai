@@ -21,10 +21,20 @@ const sendOtp = asyncHandler(async (req, res) => {
   }
 
   // Basic mobile number / email validation
-  if (phone && !/^[0-9]{10,13}$/.test(target.replace(/[^0-9]/g, ""))) {
+  if (phone) {
+    const cleanDigits = target.replace(/\D/g, "").slice(0, 10);
+    if (cleanDigits.length !== 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be exactly 10 digits",
+      });
+    }
+  }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(target)) {
     return res.status(400).json({
       success: false,
-      message: "Please enter a valid 10-digit mobile number",
+      message: "Please enter a valid email address",
     });
   }
 

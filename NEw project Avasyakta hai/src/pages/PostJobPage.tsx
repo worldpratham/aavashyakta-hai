@@ -135,6 +135,16 @@ export function PostJobPage() {
       return;
     }
 
+    const cleanPhone = phone.replace(/\D/g, '').slice(0, 10);
+    if (cleanPhone && cleanPhone.length !== 10) {
+      setError(
+        language === 'hi'
+          ? 'कृपया सही 10-अंकीय मोबाइल नंबर दर्ज करें।'
+          : 'Please enter a valid 10-digit mobile number.'
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -158,7 +168,7 @@ export function PostJobPage() {
         taskDetails: wageType === 'task' ? taskRate : '',
         wage: Number(wage),
         wageType,
-        phone,
+        phone: cleanPhone,
         latitude: coords?.latitude ?? null,
         longitude: coords?.longitude ?? null,
       };
@@ -166,9 +176,9 @@ export function PostJobPage() {
       const createdJob = await api.jobs.create(payload);
 
       // Automatically sync phone & location to recruiter profile if not previously set
-      if (profileId && (phone || location)) {
+      if (profileId && (cleanPhone || location)) {
         api.users.update(profileId, {
-          phone: profile?.phone || phone || null,
+          phone: profile?.phone || cleanPhone || null,
           location: profile?.location || location || null,
         }).catch(() => {});
       }
@@ -394,9 +404,16 @@ export function PostJobPage() {
         <div>
           <label className="label">{t('post_job_phone', 'Contact phone')}</label>
           <input
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
             className="input"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+              setPhone(val);
+              if (error) setError(null);
+            }}
             placeholder={language === 'hi' ? 'कामगारों के संपर्क के लिए आपका 10-अंकीय मोबाइल नंबर' : 'Your 10-digit phone number for workers to reach you'}
           />
           <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">

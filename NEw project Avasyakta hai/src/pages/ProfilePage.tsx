@@ -158,12 +158,12 @@ export function ProfilePage() {
       return;
     }
 
-    const cleanPhone = phone.trim().replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
+    const cleanPhone = phone.trim().replace(/\D/g, '').slice(0, 10);
+    if (!cleanPhone || cleanPhone.length !== 10) {
       setAadhaarError(
         language === 'hi'
           ? 'आधार OTP प्राप्त करने के लिए Step 1 में 10-अंकीय मोबाइल नंबर आवश्यक है।'
-          : 'Valid mobile number in Step 1 is required to receive OTP.'
+          : 'Valid 10-digit mobile number in Step 1 is required to receive OTP.'
       );
       return;
     }
@@ -193,7 +193,7 @@ export function ProfilePage() {
     setStepError(null);
 
     const cleanName = fullName.trim();
-    const cleanPhone = phone.trim().replace(/\s+/g, '');
+    const cleanPhone = phone.trim().replace(/\D/g, '').slice(0, 10);
     const cleanLoc = location.trim();
 
     if (!cleanName) {
@@ -214,7 +214,7 @@ export function ProfilePage() {
       return;
     }
 
-    if (cleanPhone.replace(/\D/g, '').length < 10) {
+    if (cleanPhone.length !== 10) {
       setStepError(
         language === 'hi'
           ? 'कृपया मान्य 10-अंकीय मोबाइल नंबर दर्ज करें *'
@@ -246,11 +246,22 @@ export function ProfilePage() {
     setError(null);
     setSaved(false);
 
+    const cleanPhone = phone.trim().replace(/\D/g, '').slice(0, 10);
+    if (cleanPhone && cleanPhone.length !== 10) {
+      setError(
+        language === 'hi'
+          ? 'कृपया मान्य 10-अंकीय मोबाइल नंबर दर्ज करें।'
+          : 'Please enter a valid 10-digit mobile number.'
+      );
+      setSaving(false);
+      return;
+    }
+
     try {
       await api.users.update(userId, {
         full_name: fullName.trim(),
         name: fullName.trim(),
-        phone: phone.trim() || null,
+        phone: cleanPhone || null,
         bio: bio.trim() || null,
         location: location.trim() || null,
         aadhaar_number: aadhaarNumber.replace(/\s+/g, '') || null,
@@ -584,10 +595,14 @@ export function ProfilePage() {
                 <div className="relative">
                   <Phone size={18} className="absolute left-3.5 top-3.5 text-stone-400 dark:text-stone-500" />
                   <input
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={10}
                     className="input pl-10"
                     value={phone}
                     onChange={(e) => {
-                      setPhone(e.target.value);
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setPhone(val);
                       if (stepError) setStepError(null);
                     }}
                     placeholder="9876543210"
