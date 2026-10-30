@@ -18,6 +18,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { type Role } from '@/lib/api';
 import { Link, useRouter } from '@/router';
 import { getDraftField, saveDraft, clearDraft } from '@/lib/draftStorage';
+import { TermsAndConditionsModal } from '@/components/TermsAndConditionsModal';
 
 const SIGNUP_DRAFT_KEY = 'draft_signup_simple';
 
@@ -43,6 +44,8 @@ export function SignUpPage() {
   const [email, setEmail] = useState(() => getDraftField(SIGNUP_DRAFT_KEY, 'email', ''));
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -116,6 +119,13 @@ export function SignUpPage() {
           : 'Password must be at least 6 characters *';
     }
 
+    if (!termsAccepted) {
+      errors.termsAccepted =
+        language === 'hi'
+          ? 'खाता बनाने के लिए आपको नियम, शर्तें व दायित्वमुक्ति (Terms & Conditions) स्वीकार करना अनिवार्य है *'
+          : 'You must accept the Terms & Conditions and Platform Disclaimer to register *';
+    }
+
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
@@ -130,6 +140,8 @@ export function SignUpPage() {
         email: cleanEmail,
         password: cleanPassword,
         role,
+        terms_accepted: true,
+        termsAccepted: true,
         // Sensible defaults so user is never blocked
         company_name: role === 'employer' ? cleanName : '',
       };
@@ -359,6 +371,82 @@ export function SignUpPage() {
             </div>
           </div>
 
+          {/* Mandatory Terms & Conditions Checkbox */}
+          <div className="rounded-xl border border-stone-200 dark:border-stone-800 bg-stone-50/70 dark:bg-stone-800/40 p-3.5">
+            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => {
+                  setTermsAccepted(e.target.checked);
+                  if (e.target.checked) clearFieldError('termsAccepted');
+                }}
+                className="mt-0.5 h-4 w-4 rounded-md border-stone-300 dark:border-stone-700 text-emerald-600 focus:ring-emerald-500/30 cursor-pointer accent-emerald-600 shrink-0"
+              />
+              <span className="text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
+                {language === 'hi' ? (
+                  <>
+                    मैंने आवश्यकता है के{' '}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTermsModal(true);
+                      }}
+                      className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline cursor-pointer"
+                    >
+                      नियम, शर्तें (Terms & Conditions)
+                    </button>{' '}
+                    एवं{' '}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTermsModal(true);
+                      }}
+                      className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline cursor-pointer"
+                    >
+                      दायित्व मुक्ति (Zero Owner Liability)
+                    </button>{' '}
+                    को पढ़ लिया है और मैं उनसे पूर्णतः सहमत हूँ।
+                  </>
+                ) : (
+                  <>
+                    I have read and agree to the{' '}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTermsModal(true);
+                      }}
+                      className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline cursor-pointer"
+                    >
+                      Terms & Conditions
+                    </button>{' '}
+                    and{' '}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTermsModal(true);
+                      }}
+                      className="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline cursor-pointer"
+                    >
+                      Zero Owner Liability Policy
+                    </button>
+                    .
+                  </>
+                )}
+                <span className="text-rose-500 ml-1 font-bold">*</span>
+              </span>
+            </label>
+            {fieldErrors.termsAccepted && (
+              <p className="mt-2 text-xs text-rose-500 font-semibold pl-6.5">
+                {fieldErrors.termsAccepted}
+              </p>
+            )}
+          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -393,6 +481,17 @@ export function SignUpPage() {
           </Link>
         </div>
       </div>
+
+      {/* Full Terms, Conditions & Zero-Liability Disclaimer Modal */}
+      <TermsAndConditionsModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        onAccept={() => {
+          setTermsAccepted(true);
+          clearFieldError('termsAccepted');
+        }}
+        isAccepted={termsAccepted}
+      />
     </div>
   );
 }

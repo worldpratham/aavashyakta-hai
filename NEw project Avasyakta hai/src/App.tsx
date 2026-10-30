@@ -14,6 +14,7 @@ import { MyJobsPage } from '@/pages/MyJobsPage';
 import { MyApplicationsPage } from '@/pages/MyApplicationsPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { AdminPage } from '@/pages/AdminPage';
+import { TermsPage } from '@/pages/TermsPage';
 import { isAdminUser } from '@/lib/api';
 import { AiChatbot } from '@/components/AiChatbot';
 
@@ -81,6 +82,7 @@ function Routes() {
   if (currentPath === '/jobs') return <JobsPage />;
   if (currentPath === '/signin') return <SignInPage />;
   if (currentPath === '/signup') return <SignUpPage />;
+  if (currentPath === '/terms') return <TermsPage />;
   if (jobMatch) return <JobDetailPage jobId={jobMatch[1]} />;
   if (currentPath === '/post-job')
     return (
@@ -123,8 +125,18 @@ function AppContent() {
         <Routes />
       </main>
       <footer className="border-t border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-900 transition-colors duration-300">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-center text-sm text-stone-400 dark:text-stone-500">
-          Abasyakta — Connecting workers with work.
+        <div className="mx-auto max-w-6xl px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-stone-500 dark:text-stone-400">
+          <div>
+            Abasyakta (आवश्यकता है) — Connecting workers with work.
+          </div>
+          <div className="flex items-center gap-4 text-xs">
+            <Link
+              to="/terms"
+              className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-semibold hover:underline"
+            >
+              नियम, शर्तें एवं अस्वीकरण (Terms & Conditions)
+            </Link>
+          </div>
         </div>
       </footer>
       <AiChatbot />

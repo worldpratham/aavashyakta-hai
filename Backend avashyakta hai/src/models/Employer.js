@@ -92,6 +92,14 @@ const employerSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    terms_accepted: {
+      type: Boolean,
+      default: false,
+    },
+    terms_accepted_at: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

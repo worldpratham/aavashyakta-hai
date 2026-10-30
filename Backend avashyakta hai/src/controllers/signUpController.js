@@ -28,7 +28,7 @@ const register = asyncHandler(async (req, res) => {
   const cleanBankDetails = body.bank_details || body.bankDetails || null;
   const cleanPaymentMode = body.payment_mode || body.paymentMode || "bank_transfer";
   const cleanUpiId = body.upi_id || body.upiId || "";
-  const cleanTerms = body.terms_accepted ?? body.termsAccepted ?? true;
+  const cleanTerms = body.terms_accepted === true || body.termsAccepted === true || body.terms === true;
 
   const rawSkills = body.skills;
   const skillList = Array.isArray(rawSkills)
@@ -50,6 +50,13 @@ const register = asyncHandler(async (req, res) => {
     return res.status(400).json({
       success: false,
       message: "Role must be either worker or employer",
+    });
+  }
+
+  if (!cleanTerms) {
+    return res.status(400).json({
+      success: false,
+      message: "You must accept the Terms & Conditions and Platform Disclaimer to register",
     });
   }
 
@@ -103,6 +110,8 @@ const register = asyncHandler(async (req, res) => {
       location: cleanLocation,
       bio: cleanBio,
       avatar_url: cleanAvatar,
+      terms_accepted: true,
+      terms_accepted_at: new Date(),
     });
 
     // 2. Also sync to users collection
@@ -123,6 +132,8 @@ const register = asyncHandler(async (req, res) => {
       location: cleanLocation,
       bio: cleanBio,
       avatar_url: cleanAvatar,
+      terms_accepted: true,
+      terms_accepted_at: new Date(),
     }).catch((err) => console.warn("User sync warning:", err.message));
   } else {
     // 1. Save to workers collection
@@ -174,7 +185,8 @@ const register = asyncHandler(async (req, res) => {
       bank_details: cleanBankDetails,
       payment_mode: cleanPaymentMode,
       upi_id: cleanUpiId,
-      terms_accepted: cleanTerms,
+      terms_accepted: true,
+      terms_accepted_at: new Date(),
     }).catch((err) => console.warn("User sync warning:", err.message));
   }
 
