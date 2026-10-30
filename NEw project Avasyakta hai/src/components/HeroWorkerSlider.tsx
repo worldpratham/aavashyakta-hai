@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Truck,
 } from 'lucide-react';
+import { useRouter } from '@/router';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface WorkerSlideItem {
   id: string;
@@ -174,11 +176,139 @@ const ROW_2_WORKERS: WorkerSlideItem[] = [
   },
 ];
 
-export function HeroWorkerSlider() {
+interface HeroWorkerSliderProps {
+  isMobile?: boolean;
+}
+
+export function HeroWorkerSlider({ isMobile = false }: HeroWorkerSliderProps) {
+  const { navigate } = useRouter();
+  const { language } = useLanguage();
+
   // Duplicate arrays to create seamless infinite loops
   const row1Items = [...ROW_1_WORKERS, ...ROW_1_WORKERS];
   const row2Items = [...ROW_2_WORKERS, ...ROW_2_WORKERS];
 
+  const handleCardClick = (category: string) => {
+    navigate(`/jobs?q=${encodeURIComponent(category)}`);
+  };
+
+  // ---------------------------------------------------------------------------
+  // MOBILE / TABLET STANDALONE STREAM
+  // Prominently shown below hero card so mobile users see active worker photos
+  // ---------------------------------------------------------------------------
+  if (isMobile) {
+    return (
+      <div className="hero-slider-wrap relative w-full overflow-hidden select-none z-10 hero-slider-mask py-2 touch-pan-y">
+        {/* Subtle Section Header for Mobile */}
+        <div className="px-4 mb-2.5 flex items-center justify-between max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+            <Sparkles size={13} className="text-emerald-500 animate-pulse" />
+            <span>{language === 'hi' ? 'लोकप्रिय कामगार श्रेणियां' : 'Popular Categories'}</span>
+          </div>
+          <span className="text-[10px] font-semibold text-stone-500 dark:text-stone-400">
+            {language === 'hi' ? '1-क्लिक डायरेक्ट कॉल' : 'Direct Call & Apply'}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-3 w-full">
+          {/* ROW 1: Slides Left smoothly */}
+          <div className="overflow-hidden w-full flex items-center">
+            <div className="animate-hero-slide-left flex items-center gap-3.5 py-1">
+              {row1Items.map((worker, index) => (
+                <div
+                  key={`mobile-r1-${worker.id}-${index}`}
+                  onClick={() => handleCardClick(worker.category)}
+                  className="relative shrink-0 w-40 sm:w-48 h-52 sm:h-60 rounded-2xl overflow-hidden shadow-lg border-2 border-white/90 dark:border-stone-800 bg-stone-200 dark:bg-stone-800 cursor-pointer active:scale-95 transition-transform"
+                >
+                  <img
+                    src={worker.imageUrl}
+                    alt={worker.roleEn}
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Gradient shadow for text contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+
+                  {/* Top Badge */}
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
+                      <CheckCircle2 size={10} className="text-emerald-400" />
+                      {worker.tag}
+                    </span>
+                  </div>
+
+                  {/* Bottom Worker Information */}
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md text-white text-[10px] font-semibold mb-1 border border-white/20">
+                      {worker.icon}
+                      <span className="truncate">{worker.category}</span>
+                    </div>
+                    <div className="text-white font-bold text-xs leading-tight drop-shadow-md truncate">
+                      {worker.roleHi}
+                    </div>
+                    <div className="text-stone-300 text-[10px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
+                      {worker.roleEn}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ROW 2: Slides Right smoothly */}
+          <div className="overflow-hidden w-full flex items-center">
+            <div className="animate-hero-slide-right flex items-center gap-3.5 py-1">
+              {row2Items.map((worker, index) => (
+                <div
+                  key={`mobile-r2-${worker.id}-${index}`}
+                  onClick={() => handleCardClick(worker.category)}
+                  className="relative shrink-0 w-40 sm:w-48 h-52 sm:h-60 rounded-2xl overflow-hidden shadow-lg border-2 border-white/90 dark:border-stone-800 bg-stone-200 dark:bg-stone-800 cursor-pointer active:scale-95 transition-transform"
+                >
+                  <img
+                    src={worker.imageUrl}
+                    alt={worker.roleEn}
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Gradient shadow for text contrast */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
+
+                  {/* Top Badge */}
+                  <div className="absolute top-2 right-2">
+                    <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
+                      <CheckCircle2 size={10} className="text-emerald-400" />
+                      {worker.tag}
+                    </span>
+                  </div>
+
+                  {/* Bottom Worker Information */}
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5">
+                    <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/20 backdrop-blur-md text-white text-[10px] font-semibold mb-1 border border-white/20">
+                      {worker.icon}
+                      <span className="truncate">{worker.category}</span>
+                    </div>
+                    <div className="text-white font-bold text-xs leading-tight drop-shadow-md truncate">
+                      {worker.roleHi}
+                    </div>
+                    <div className="text-stone-300 text-[10px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
+                      {worker.roleEn}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // DESKTOP AMBIENT BACKGROUND STREAM
+  // Seamless loop behind and around the centerpiece hero card
+  // ---------------------------------------------------------------------------
   return (
     <div className="hero-slider-wrap pointer-events-none absolute inset-0 overflow-hidden select-none z-0 hero-slider-mask">
       {/* Subtle Background Glow behind slides */}
@@ -192,41 +322,42 @@ export function HeroWorkerSlider() {
             {row1Items.map((worker, index) => (
               <div
                 key={`${worker.id}-${index}`}
-                className="relative shrink-0 w-56 sm:w-64 md:w-72 h-64 sm:h-72 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 dark:border-stone-800/90 bg-stone-200 dark:bg-stone-800"
+                onClick={() => handleCardClick(worker.category)}
+                className="pointer-events-auto cursor-pointer relative shrink-0 w-56 sm:w-64 md:w-72 h-64 sm:h-72 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 dark:border-stone-800/90 bg-stone-200 dark:bg-stone-800 active:scale-95 transition-transform"
               >
-                  <img
-                    src={worker.imageUrl}
-                    alt={worker.roleEn}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
+                <img
+                  src={worker.imageUrl}
+                  alt={worker.roleEn}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
 
-                  {/* Gradient shadow for text contrast */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                {/* Gradient shadow for text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                  {/* Top Badge */}
-                  <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
-                      <CheckCircle2 size={11} className="text-emerald-400" />
-                      {worker.tag}
-                    </span>
+                {/* Top Badge */}
+                <div className="absolute top-3 right-3">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
+                    <CheckCircle2 size={11} className="text-emerald-400" />
+                    {worker.tag}
+                  </span>
+                </div>
+
+                {/* Bottom Worker Information */}
+                <div className="absolute bottom-3.5 left-3.5 right-3.5">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 backdrop-blur-md text-white text-xs font-semibold mb-1 border border-white/20">
+                    {worker.icon}
+                    <span className="truncate">{worker.category}</span>
                   </div>
-
-                  {/* Bottom Worker Information */}
-                  <div className="absolute bottom-3.5 left-3.5 right-3.5">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 backdrop-blur-md text-white text-xs font-semibold mb-1 border border-white/20">
-                      {worker.icon}
-                      <span className="truncate">{worker.category}</span>
-                    </div>
-                    <div className="text-white font-extrabold text-sm leading-tight drop-shadow-md">
-                      {worker.roleHi}
-                    </div>
-                    <div className="text-stone-300 text-[11px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
-                      {worker.roleEn}
-                    </div>
+                  <div className="text-white font-extrabold text-sm leading-tight drop-shadow-md">
+                    {worker.roleHi}
+                  </div>
+                  <div className="text-stone-300 text-[11px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
+                    {worker.roleEn}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -236,41 +367,42 @@ export function HeroWorkerSlider() {
             {row2Items.map((worker, index) => (
               <div
                 key={`${worker.id}-${index}`}
-                className="relative shrink-0 w-56 sm:w-64 md:w-72 h-64 sm:h-72 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 dark:border-stone-800/90 bg-stone-200 dark:bg-stone-800"
+                onClick={() => handleCardClick(worker.category)}
+                className="pointer-events-auto cursor-pointer relative shrink-0 w-56 sm:w-64 md:w-72 h-64 sm:h-72 md:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white/90 dark:border-stone-800/90 bg-stone-200 dark:bg-stone-800 active:scale-95 transition-transform"
               >
-                  <img
-                    src={worker.imageUrl}
-                    alt={worker.roleEn}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
+                <img
+                  src={worker.imageUrl}
+                  alt={worker.roleEn}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
 
-                  {/* Gradient shadow for text contrast */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                {/* Gradient shadow for text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                  {/* Top Badge */}
-                  <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
-                      <CheckCircle2 size={11} className="text-emerald-400" />
-                      {worker.tag}
-                    </span>
+                {/* Top Badge */}
+                <div className="absolute top-3 right-3">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-emerald-300 border border-emerald-500/30 shadow-xs">
+                    <CheckCircle2 size={11} className="text-emerald-400" />
+                    {worker.tag}
+                  </span>
+                </div>
+
+                {/* Bottom Worker Information */}
+                <div className="absolute bottom-3.5 left-3.5 right-3.5">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 backdrop-blur-md text-white text-xs font-semibold mb-1 border border-white/20">
+                    {worker.icon}
+                    <span className="truncate">{worker.category}</span>
                   </div>
-
-                  {/* Bottom Worker Information */}
-                  <div className="absolute bottom-3.5 left-3.5 right-3.5">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/15 backdrop-blur-md text-white text-xs font-semibold mb-1 border border-white/20">
-                      {worker.icon}
-                      <span className="truncate">{worker.category}</span>
-                    </div>
-                    <div className="text-white font-extrabold text-sm leading-tight drop-shadow-md">
-                      {worker.roleHi}
-                    </div>
-                    <div className="text-stone-300 text-[11px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
-                      {worker.roleEn}
-                    </div>
+                  <div className="text-white font-extrabold text-sm leading-tight drop-shadow-md">
+                    {worker.roleHi}
+                  </div>
+                  <div className="text-stone-300 text-[11px] font-medium leading-none mt-0.5 truncate drop-shadow-xs">
+                    {worker.roleEn}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

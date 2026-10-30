@@ -267,9 +267,11 @@ html {
   will-change: transform;
 }
 
-/* Pause animation on hover */
+/* Pause animation on hover or active touch/press */
 .hero-slider-wrap:hover .animate-hero-slide-left,
-.hero-slider-wrap:hover .animate-hero-slide-right {
+.hero-slider-wrap:hover .animate-hero-slide-right,
+.hero-slider-wrap:active .animate-hero-slide-left,
+.hero-slider-wrap:active .animate-hero-slide-right {
   animation-play-state: paused;
 }
 

@@ -260,13 +260,15 @@ export function LandingPage() {
       {/* ========================================================================= */}
       {/* HERO SECTION (Jobhai Style with Floating White Center Card) */}
       {/* ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50/70 via-stone-50 to-white dark:from-emerald-950/20 dark:via-stone-950 dark:to-stone-900 py-12 md:py-20">
-        {/* Dynamic sliding background project worker imagery */}
-        <HeroWorkerSlider />
+      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50/70 via-stone-50 to-white dark:from-emerald-950/20 dark:via-stone-950 dark:to-stone-900 py-8 md:py-20">
+        {/* Dynamic sliding background project worker imagery (Desktop large screens) */}
+        <div className="hidden lg:block absolute inset-0 pointer-events-none">
+          <HeroWorkerSlider />
+        </div>
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center">
           {/* Floating White Card (Jobhai Hero Centerpiece) */}
-          <div className="rounded-3xl bg-white/95 dark:bg-stone-900/95 backdrop-blur-md p-8 md:p-12 shadow-2xl shadow-emerald-900/10 dark:shadow-emerald-950/40 border border-stone-100 dark:border-stone-800 ring-1 ring-black/5 dark:ring-white/5">
+          <div className="rounded-3xl bg-white/95 dark:bg-stone-900/95 backdrop-blur-md p-5 sm:p-8 md:p-12 shadow-2xl shadow-emerald-900/10 dark:shadow-emerald-950/40 border border-stone-100 dark:border-stone-800 ring-1 ring-black/5 dark:ring-white/5">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 px-3.5 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 mb-4">
               <Sparkles size={14} className="text-emerald-600 dark:text-emerald-400" />
               <span>{t('hero_badge', "India's Trusted Direct Hiring Platform")}</span>
@@ -393,6 +395,11 @@ export function LandingPage() {
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Dynamic sliding worker imagery on Mobile/Tablet (Visible and prominent below hero card) */}
+        <div className="lg:hidden mt-6 sm:mt-8 relative z-10">
+          <HeroWorkerSlider isMobile />
         </div>
       </section>
 
