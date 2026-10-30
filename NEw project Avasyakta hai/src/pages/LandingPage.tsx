@@ -330,7 +330,7 @@ export function LandingPage() {
                   onChange={(e) => setHeroSearch(e.target.value)}
                   className="w-full rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/90 py-3 pl-10 pr-12 text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:bg-white dark:focus:bg-stone-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition"
                 />
-                <div className="absolute right-2 top-2">
+                <div className="absolute right-2 top-2"> 
                   <VoiceSearchButton
                     size="sm"
                     onResult={(spokenText) => {
